@@ -1,177 +1,228 @@
 # NTA Secure Exam Portal
 
-A secure, browser-based examination portal inspired by National Testing Agency style examination workflows. The project is intended to provide a clean candidate experience for mock tests, timed assessments, and controlled exam sessions.
+A modern and secure digital examination management platform designed to streamline candidate registration, exam access, verification, attendance tracking, and result processing.
 
-> Note: This documentation describes the expected project structure and usage for this repository. Update the setup commands if your implementation uses a specific framework, package manager, or backend service.
+The project is inspired by National Testing Agency (NTA) style computer-based examination workflows and focuses on creating a reliable, scalable, and transparent exam infrastructure.
 
-## Features
+---
 
-- Candidate login and exam access flow
-- Timed online examination interface
-- Question navigation and answer selection
-- Secure exam-session focused user experience
-- Responsive layout for common desktop and laptop screen sizes
-- Clear submit flow for final answer review
+# Overview
 
-## Project Goals
+The NTA Secure Exam Portal aims to provide a structured and secure environment for conducting online examinations while reducing manual errors, unauthorized access, and workflow inefficiencies.
 
-The portal is designed to simulate a structured computer-based test environment. It focuses on:
+The platform includes:
 
-- Reducing distractions during exams
-- Presenting questions in a predictable format
-- Helping candidates track attempted, unanswered, and marked questions
-- Supporting a familiar online test workflow
-- Keeping the codebase easy to understand for students, reviewers, and contributors
+- Student registration and authentication
+- Admin monitoring and verification
+- Timed examination interface
+- Secure admit-card verification
+- Attendance management
+- Result and scorecard generation
+- Role-based access control
 
-## Tech Stack
+---
 
-Update this section to match the actual repository.
+# Key Features
 
-Common possibilities:
+## Student Portal
 
-- HTML, CSS, and JavaScript for a static frontend
-- React, Vite, or another frontend framework
-- Node.js or another backend runtime if server-side features are included
-- Local storage, JSON, Firebase, MongoDB, or SQL if persistence is included
+- Candidate registration and login
+- Profile and application management
+- Secure exam access
+- Admit card access
+- Exam instructions and dashboard
+- Result and scorecard viewing
 
-## Getting Started
+## Admin Portal
 
-### Prerequisites
+- Real-time application monitoring
+- Student verification workflow
+- Dashboard analytics
+- Exam management
+- Attendance monitoring
+- Result publication
 
-Install the tools required by your implementation. Typical requirements may include:
+## Examination Module
 
-- A modern browser such as Chrome, Edge, or Firefox
-- Node.js LTS, if the project uses a JavaScript build system
-- Git, if cloning from GitHub
+- Timed examination environment
+- Question navigation system
+- Save and review functionality
+- Final submission workflow
+- Auto-submit support
 
-### Clone The Repository
+## Security Features
 
-```bash
-git clone https://github.com/DesignedBySoumya/NTA-secure-exam-portal.git
-cd NTA-secure-exam-portal
+- Secure authentication system
+- Role-based access control
+- QR/admit-card verification-ready architecture
+- Duplicate submission prevention
+- Audit-log-ready structure
+- Server-side validation-ready workflow
+
+---
+
+# System Architecture
+
+```text
+                    ┌────────────────────┐
+                    │     STUDENT        │
+                    └─────────┬──────────┘
+                              │
+                              ▼
+                ┌─────────────────────────┐
+                │ Registration & Login    │
+                └─────────┬───────────────┘
+                          │
+                          ▼
+                ┌─────────────────────────┐
+                │ Student Dashboard       │
+                └─────────┬───────────────┘
+                          │
+                          ▼
+                ┌─────────────────────────┐
+                │ Application Submission  │
+                └─────────┬───────────────┘
+                          │
+                          ▼
+          ┌────────────────────────────────────┐
+          │        ADMIN VERIFICATION          │
+          └──────────────┬─────────────────────┘
+                         │
+                         ▼
+          ┌────────────────────────────────────┐
+          │ Admit Card / Exam Access Generated │
+          └──────────────┬─────────────────────┘
+                         │
+                         ▼
+          ┌────────────────────────────────────┐
+          │       Candidate Verification       │
+          └──────────────┬─────────────────────┘
+                         │
+                         ▼
+          ┌────────────────────────────────────┐
+          │        Online Examination          │
+          └──────────────┬─────────────────────┘
+                         │
+                         ▼
+          ┌────────────────────────────────────┐
+          │     Submission & Result System     │
+          └────────────────────────────────────┘
 ```
 
-### Run The Project
+---
 
-If this is a static HTML project, open `index.html` in a browser.
+# Exam Workflow
 
-If this is a Node.js project, install dependencies and start the development server:
-
-```bash
-npm install
-npm run dev
+```text
+1. Student Registration
+        ↓
+2. Login Authentication
+        ↓
+3. Profile Completion
+        ↓
+4. Application Submission
+        ↓
+5. Admin Verification
+        ↓
+6. Admit Card Generation
+        ↓
+7. Candidate Verification
+        ↓
+8. Timed Examination
+        ↓
+9. Final Submission
+        ↓
+10. Result Generation
+        ↓
+11. Scorecard Publication
 ```
 
-If the project uses a different command, replace the command above with the correct script from `package.json`.
+---
 
-## Suggested Folder Structure
+# Tech Stack
+
+| Layer | Technology |
+|------|-------------|
+| Frontend | React + Vite |
+| Styling | Tailwind CSS |
+| Backend | Supabase / Node.js |
+| Database | PostgreSQL |
+| Authentication | Supabase Auth |
+| Hosting | Vercel / Netlify |
+
+---
+
+# Folder Structure
 
 ```text
 NTA-secure-exam-portal/
-├── index.html
-├── assets/
-│   ├── images/
-│   └── icons/
-├── css/
-│   └── styles.css
-├── js/
-│   ├── app.js
-│   ├── exam.js
-│   └── auth.js
-├── data/
-│   └── questions.json
+│
+├── public/
+│
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── pages/
+│   ├── layouts/
+│   ├── services/
+│   ├── utils/
+│   ├── hooks/
+│   └── App.jsx
+│
+├── .env
+├── package.json
 └── README.md
 ```
 
-Actual folders may differ depending on the implementation.
+---
 
-## Exam Flow
 
-1. Candidate opens the portal.
-2. Candidate signs in or enters required exam details.
-3. Portal displays exam instructions.
-4. Candidate starts the exam.
-5. Timer begins and questions become available.
-6. Candidate answers questions, navigates sections, and reviews marked items.
-7. Candidate submits the exam.
-8. Portal displays confirmation, result, or completion status depending on the implementation.
+# Security Considerations
 
-## Security Considerations
+This project is intended for educational and prototype purposes.
 
-This project can include exam-focused safeguards, but client-side protections alone are not enough for high-stakes assessments. For production usage, add server-side validation and monitoring.
+For production-level deployment:
 
-Recommended safeguards:
+- Implement strict server-side validation
+- Enable HTTPS
+- Configure row-level security
+- Encrypt sensitive data
+- Store submissions securely
+- Add audit logging
+- Restrict admin access
+- Monitor suspicious activities
 
-- Validate authentication on the server
-- Store exam questions securely
-- Avoid exposing answer keys in frontend code
-- Record submissions server-side
-- Prevent duplicate submissions
-- Use HTTPS in production
-- Add audit logs for login, start, submit, and suspicious events
-- Keep secrets out of the repository
+---
 
-## Configuration
+# Future Scope
 
-Document environment variables here if the project uses them.
+- QR-based admit-card verification
+- Exam-center management portal
+- Payment gateway integration
+- Secure paper distribution module
+- AI-based suspicious activity detection
+- Automated merit list generation
+- PDF scorecard generation
+- Email and SMS notifications
 
-Example:
+---
 
-```env
-VITE_API_BASE_URL=http://localhost:3000
-DATABASE_URL=your_database_url
-SESSION_SECRET=your_session_secret
-```
+# Deployment
 
-Never commit real secrets, API keys, tokens, or production credentials.
+Recommended platforms:
 
-## Testing
+- Vercel
+- Netlify
+- GitHub Pages
 
-Add test instructions once the project has a test runner.
+---
 
-Common commands:
+# Author
 
-```bash
-npm test
-npm run lint
-```
+Created by [DesignedBySoumya](https://github.com/DesignedBySoumya)
 
-Recommended manual checks:
+---
 
-- Login flow works
-- Exam instructions display correctly
-- Timer starts, updates, and ends correctly
-- Question navigation works
-- Answers are saved before moving between questions
-- Submit flow requires confirmation
-- Result or completion state appears after submission
-- Layout works on common desktop and mobile widths
+# License
 
-## Deployment
-
-Static frontend deployments can be hosted on GitHub Pages, Netlify, Vercel, or any static hosting provider.
-
-For server-backed deployments:
-
-- Configure production environment variables
-- Use HTTPS
-- Enable secure cookies and session settings
-- Restrict database access
-- Review logging and backup settings
-
-## Contributing
-
-Contributions are welcome. Before opening a pull request:
-
-1. Keep changes focused and easy to review.
-2. Follow the existing file and naming conventions.
-3. Test the affected exam flow manually.
-4. Avoid committing generated files, secrets, or local editor settings.
-
-## License
-
-Add the project license here. If no license is provided, all rights are reserved by default.
-
-## Author
-
-Created by [DesignedBySoumya](https://github.com/DesignedBySoumya).
+This project is currently intended for educational and development purposes.
