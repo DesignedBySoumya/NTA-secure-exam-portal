@@ -64,7 +64,7 @@ export default function StudentResults() {
                 <div>
                   <h3 className="text-sm font-bold text-gray-800 mb-3">Subject-wise Scores</h3>
                   <div className="space-y-3">
-                    {Object.entries(JSON.parse(data.result.subject_scores || '{}')).map(([subject, score]) => (
+                    {Object.entries(typeof data.result.subject_scores === 'string' ? JSON.parse(data.result.subject_scores) : (data.result.subject_scores || {})).map(([subject, score]) => (
                       <div key={subject}>
                         <div className="flex justify-between text-sm mb-1">
                           <span className="text-gray-700">{subject}</span>
