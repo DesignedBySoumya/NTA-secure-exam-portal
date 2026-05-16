@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { Users, FileText, CheckCircle, CreditCard, Clock, TrendingUp, AlertCircle, MapPin, Activity } from 'lucide-react'
+import { Users, FileText, CheckCircle, CreditCard, Clock, TrendingUp, AlertCircle, MapPin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function AdminDashboard() {
@@ -50,160 +50,117 @@ export default function AdminDashboard() {
   if (loading) return <div className="flex items-center justify-center h-48"><div className="w-8 h-8 border-4 border-blue-700 border-t-transparent rounded-full animate-spin" /></div>
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      {/* Premium Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 p-10 rounded-3xl text-white shadow-2xl shadow-blue-900/20">
-        <div className="relative z-10">
-          <h1 className="text-4xl font-black mb-2 tracking-tight">Admin Command Center</h1>
-          <p className="text-blue-200 text-sm font-medium max-w-xl leading-relaxed">
-            Real-time overview of National Exam Portal operations, financial metrics, and candidate verification.
-          </p>
-        </div>
-        <div className="absolute right-0 top-0 w-full h-full opacity-10 pointer-events-none">
-          <div className="absolute right-10 -top-10 w-64 h-64 bg-blue-500 rounded-full blur-3xl mix-blend-screen" />
-          <div className="absolute right-40 top-20 w-48 h-48 bg-indigo-500 rounded-full blur-3xl mix-blend-screen" />
-        </div>
+    <div>
+      <div className="page-header">
+        <h1 className="page-title">Admin Dashboard</h1>
+        <p className="page-subtitle">Overview of all registrations, payments, and exam activities</p>
       </div>
 
-      {/* Glassmorphic Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
-        {statCards.map(({ label, value, icon: Icon, color, bg, text, link }) => (
-          <Link to={link} key={label} className="group relative overflow-hidden bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
-            <div className={`absolute -right-4 -top-4 w-24 h-24 ${bg} rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity`} />
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div className={`w-12 h-12 ${bg} rounded-2xl flex items-center justify-center mb-4 shadow-inner ring-4 ring-white`}>
-                <Icon size={22} className={text} />
-              </div>
-              <div>
-                <p className={`text-3xl font-black ${text} tracking-tight`}>{value ?? 0}</p>
-                <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-wider">{label}</p>
-              </div>
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+        {statCards.map(({ label, value, icon: Icon, bg, iconBg, text, link }) => (
+          <Link to={link} key={label} className={`stat-card ${bg} border-0 hover:scale-105 transition-transform`}>
+            <div className={`w-10 h-10 ${iconBg} rounded-xl flex items-center justify-center mb-3`}>
+              <Icon size={20} className={text} />
             </div>
+            <p className={`text-2xl font-bold ${text}`}>{value ?? 0}</p>
+            <p className="text-xs text-gray-600 mt-1 leading-tight">{label}</p>
           </Link>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Application Status Chart Container */}
-        <div className="lg:col-span-2 bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-black text-slate-800 flex items-center gap-3">
-              <div className="p-2 bg-blue-50 rounded-xl"><TrendingUp size={20} className="text-blue-600" /></div>
-              Application Analytics
+      {/* Overview chart (static) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="lg:col-span-2 card">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+              <TrendingUp size={18} className="text-blue-700" />
+              Application Status Overview
             </h2>
           </div>
-          
-          <div className="space-y-6">
+          <div className="space-y-4">
             {[
-              { label: 'Approved Verified', count: stats.approved, total: stats.total, color: 'bg-emerald-500', bg: 'bg-emerald-50' },
-              { label: 'Pending Review', count: stats.pending, total: stats.total, color: 'bg-amber-500', bg: 'bg-amber-50' },
-              { label: 'Rejected Deficient', count: stats.rejected, total: stats.total, color: 'bg-rose-500', bg: 'bg-rose-50' },
-            ].map(({ label, count, total, color, bg }) => {
+              { label: 'Approved', count: stats.approved, total: stats.total, color: 'bg-green-500' },
+              { label: 'Pending', count: stats.pending, total: stats.total, color: 'bg-yellow-400' },
+              { label: 'Rejected', count: stats.rejected, total: stats.total, color: 'bg-red-400' },
+            ].map(({ label, count, total, color }) => {
               const pct = total ? Math.round((count / total) * 100) : 0
               return (
-                <div key={label} className="group">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="font-bold text-slate-700">{label}</span>
-                    <span className="font-mono text-slate-500 font-medium">{count} ({pct}%)</span>
+                <div key={label}>
+                  <div className="flex justify-between text-sm mb-1.5">
+                    <span className="text-gray-700 font-medium">{label}</span>
+                    <span className="text-gray-500">{count} ({pct}%)</span>
                   </div>
-                  <div className={`h-4 ${bg} rounded-full overflow-hidden p-0.5 border border-slate-100`}>
-                    <div className={`h-full ${color} rounded-full transition-all duration-1000 ease-out`} style={{ width: `${pct}%` }} />
+                  <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className={`h-full ${color} rounded-full transition-all duration-500`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               )
             })}
           </div>
 
-          <div className="mt-10 grid grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100/50 relative overflow-hidden">
-              <div className="relative z-10">
-                <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Conversion</p>
-                <p className="text-4xl font-black text-blue-900">{stats.total ? Math.round((stats.paid / stats.total) * 100) : 0}%</p>
-                <p className="text-xs text-blue-700/70 mt-2 font-medium">Payment completion rate</p>
-              </div>
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="bg-blue-50 rounded-xl p-4">
+              <p className="text-xs text-gray-500">Payment Rate</p>
+              <p className="text-2xl font-bold text-blue-700 mt-1">{stats.total ? Math.round((stats.paid / stats.total) * 100) : 0}%</p>
             </div>
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100/50 relative overflow-hidden">
-              <div className="relative z-10">
-                <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Acceptance</p>
-                <p className="text-4xl font-black text-emerald-900">{stats.total ? Math.round((stats.approved / stats.total) * 100) : 0}%</p>
-                <p className="text-xs text-emerald-700/70 mt-2 font-medium">Overall approval rate</p>
-              </div>
+            <div className="bg-green-50 rounded-xl p-4">
+              <p className="text-xs text-gray-500">Approval Rate</p>
+              <p className="text-2xl font-bold text-green-700 mt-1">{stats.total ? Math.round((stats.approved / stats.total) * 100) : 0}%</p>
             </div>
           </div>
         </div>
 
-        {/* Action Center */}
-        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8 flex flex-col">
-          <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-3">
-            <div className="p-2 bg-indigo-50 rounded-xl"><Activity size={20} className="text-indigo-600" /></div>
-            Command Panel
-          </h2>
-          <div className="flex-1 space-y-3">
+        <div className="card">
+          <h2 className="text-base font-bold text-gray-900 mb-4">Quick Actions</h2>
+          <div className="space-y-2">
             {[
-              { label: 'Review Applications', to: '/admin/applications', color: 'text-amber-700 bg-amber-50 border-amber-100 hover:bg-amber-100', count: stats.pending },
-              { label: 'Generate Admit Cards', to: '/admin/admit-cards', color: 'text-blue-700 bg-blue-50 border-blue-100 hover:bg-blue-100' },
-              { label: 'Manage Exam Centers', to: '/admin/centers', color: 'text-emerald-700 bg-emerald-50 border-emerald-100 hover:bg-emerald-100' },
-              { label: 'Upload Results', to: '/admin/results', color: 'text-purple-700 bg-purple-50 border-purple-100 hover:bg-purple-100' },
-              { label: 'Secure Papers', to: '/admin/papers', color: 'text-rose-700 bg-rose-50 border-rose-100 hover:bg-rose-100' },
-              { label: 'Security Audit Logs', to: '/admin/audit-logs', color: 'text-slate-700 bg-slate-50 border-slate-200 hover:bg-slate-100' },
+              { label: 'Review Pending Applications', to: '/admin/applications', color: 'text-yellow-700 bg-yellow-50 hover:bg-yellow-100', count: stats.pending },
+              { label: 'Generate Admit Cards', to: '/admin/admit-cards', color: 'text-blue-700 bg-blue-50 hover:bg-blue-100' },
+              { label: 'Manage Exam Centers', to: '/admin/centers', color: 'text-green-700 bg-green-50 hover:bg-green-100' },
+              { label: 'Upload Results', to: '/admin/results', color: 'text-purple-700 bg-purple-50 hover:bg-purple-100' },
+              { label: 'Upload Papers', to: '/admin/papers', color: 'text-red-700 bg-red-50 hover:bg-red-100' },
+              { label: 'View Audit Logs', to: '/admin/audit-logs', color: 'text-gray-700 bg-gray-50 hover:bg-gray-100' },
             ].map(({ label, to, color, count }) => (
-              <Link key={to} to={to} className={`flex items-center justify-between p-4 rounded-2xl transition-all border ${color} group`}>
-                <span className="font-bold text-sm">{label}</span>
-                {count !== undefined ? (
-                  <span className="bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-black shadow-sm">{count} pending</span>
-                ) : (
-                  <div className="w-6 h-6 rounded-full bg-white/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[10px] font-black">→</span>
-                  </div>
-                )}
+              <Link key={to} to={to} className={`flex items-center justify-between p-3 rounded-xl transition-colors ${color} text-sm font-medium`}>
+                <span>{label}</span>
+                {count !== undefined && <span className="bg-white rounded-full px-2 py-0.5 text-xs font-bold">{count}</span>}
               </Link>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Recent Applications Table */}
-      <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-        <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <h2 className="text-xl font-black text-slate-800 flex items-center gap-3">
-            <div className="p-2 bg-slate-100 rounded-xl"><FileText size={20} className="text-slate-600" /></div>
-            Recent Filings
-          </h2>
-          <Link to="/admin/applications" className="text-sm text-blue-600 font-bold hover:text-blue-800 transition-colors bg-blue-50 px-4 py-2 rounded-xl">View Directory</Link>
+      {/* Recent applications */}
+      <div className="table-container">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 className="text-base font-bold text-gray-900">Recent Applications</h2>
+          <Link to="/admin/applications" className="text-sm text-blue-700 font-medium hover:underline">View all →</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50/80">
-              <tr>
-                <th className="px-8 py-4 text-left text-xs font-black text-slate-400 uppercase tracking-widest">Candidate Profile</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-slate-400 uppercase tracking-widest">Category</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-slate-400 uppercase tracking-widest">Exam Target</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-slate-400 uppercase tracking-widest">Filing Date</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-slate-400 uppercase tracking-widest">Clearance</th>
+            <thead>
+              <tr className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                <th className="px-6 py-3 text-left font-semibold">Student</th>
+                <th className="px-6 py-3 text-left font-semibold">Category</th>
+                <th className="px-6 py-3 text-left font-semibold">Post Applied</th>
+                <th className="px-6 py-3 text-left font-semibold">Date</th>
+                <th className="px-6 py-3 text-left font-semibold">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-gray-50">
               {recentApps.length === 0 ? (
-                <tr><td colSpan={5} className="px-8 py-16 text-center text-slate-400 font-medium">System is awaiting applications</td></tr>
+                <tr><td colSpan={5} className="px-6 py-8 text-center text-gray-400">No applications yet</td></tr>
               ) : recentApps.map(app => (
-                <tr key={app.id} className="hover:bg-blue-50/30 transition-colors group">
-                  <td className="px-8 py-5">
-                    <p className="text-sm font-bold text-slate-900 group-hover:text-blue-700 transition-colors">{app.students?.full_name || '—'}</p>
-                    <p className="text-xs text-slate-500 font-medium mt-0.5">{app.students?.email}</p>
+                <tr key={app.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-3">
+                    <p className="text-sm font-semibold text-gray-900">{app.students?.full_name || '—'}</p>
+                    <p className="text-xs text-gray-400">{app.students?.email}</p>
                   </td>
-                  <td className="px-8 py-5">
-                    <span className="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-600">{app.students?.category || 'Gen'}</span>
-                  </td>
-                  <td className="px-8 py-5 text-sm font-medium text-slate-700 max-w-xs truncate">{app.exam_post}</td>
-                  <td className="px-8 py-5 text-sm font-mono text-slate-500">{new Date(app.created_at).toLocaleDateString('en-IN')}</td>
-                  <td className="px-8 py-5">
-                    <span className={`text-xs px-3 py-1.5 rounded-xl font-bold
-                      ${app.status === 'approved' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 
-                        app.status === 'rejected' ? 'bg-rose-50 text-rose-700 border border-rose-100' : 
-                        'bg-amber-50 text-amber-700 border border-amber-100'}`}>
-                      {app.status.toUpperCase()}
-                    </span>
-                  </td>
+                  <td className="px-6 py-3 text-sm text-gray-600">{app.students?.category}</td>
+                  <td className="px-6 py-3 text-sm text-gray-700 max-w-48 truncate">{app.exam_post}</td>
+                  <td className="px-6 py-3 text-sm text-gray-500">{new Date(app.created_at).toLocaleDateString('en-IN')}</td>
+                  <td className="px-6 py-3"><span className={`badge-${app.status}`}>{app.status}</span></td>
                 </tr>
               ))}
             </tbody>
