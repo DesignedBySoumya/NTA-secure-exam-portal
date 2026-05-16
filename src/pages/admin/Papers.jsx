@@ -20,7 +20,11 @@ export default function Papers() {
 
   const fetchPapers = async () => {
     setLoading(true)
-    const { data } = await supabase.from('papers').select('*').order('created_at', { ascending: false })
+    const { data, error } = await supabase.from('papers').select('*').order('created_at', { ascending: false })
+    if (error) {
+      console.error('Fetch papers error:', error)
+      toast.error('Could not fetch papers. Table might be missing.')
+    }
     setPapers(data || [])
     setLoading(false)
   }
@@ -31,13 +35,17 @@ export default function Papers() {
     setSaving(true)
     try {
       const path = `papers/${form.exam_id}/${file.name}`
-      await supabase.storage.from('exam-papers').upload(path, file, { upsert: true })
-      await supabase.from('papers').insert({
+      const { error: uploadError } = await supabase.storage.from('exam-papers').upload(path, file, { upsert: true })
+      if (uploadError) throw new Error(`Storage error: ${uploadError.message}`)
+      
+      const { error: insertError } = await supabase.from('papers').insert({
         ...form,
         file_path: path,
         access_status: 'locked',
         uploaded_by: (await supabase.auth.getUser()).data.user?.id,
       })
+      if (insertError) throw new Error(`Database error: ${insertError.message}`)
+      
       await logAudit('PAPER_UPLOADED', { exam_id: form.exam_id, subject: form.subject })
       toast.success('Paper uploaded and encrypted!')
       setShowForm(false)

@@ -91,8 +91,8 @@ export default function AuditLogs() {
                       {log.action}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-xs font-mono text-gray-500">{log.user_id?.slice(0, 8)}...</td>
-                  <td className="px-5 py-3 text-xs text-gray-600 max-w-xs truncate font-mono">{log.details}</td>
+                  <td className="px-5 py-3 text-xs font-mono text-gray-500">System</td>
+                  <td className="px-5 py-3 text-xs text-gray-600 max-w-xs truncate font-mono">{log.details ? JSON.stringify(log.details) : ''}</td>
                 </tr>
               ))}
             </tbody>
