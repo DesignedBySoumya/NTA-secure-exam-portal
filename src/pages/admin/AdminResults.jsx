@@ -13,15 +13,11 @@ export default function AdminResults() {
   useEffect(() => {
     async function load() {
       setLoading(true)
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('applications')
         .select('*, students(full_name, email, category), results(*)')
         .eq('status', 'approved')
         .order('created_at')
-      if (error) {
-        console.error('Results fetch error:', error)
-        toast.error('Could not fetch applications. Check the results table exists.')
-      }
       setApps(data || [])
       setLoading(false)
     }
@@ -88,7 +84,7 @@ export default function AdminResults() {
           <h1 className="page-title">Results Management</h1>
           <p className="page-subtitle">Upload marks and publish merit list</p>
         </div>
-        <button onClick={publishMeritList} className="btn-primary">
+        <button onClick={publishMeritList} className="btn-success">
           <Trophy size={16} /> Publish Merit List
         </button>
       </div>
@@ -116,12 +112,6 @@ export default function AdminResults() {
             <tbody className="divide-y divide-gray-50">
               {loading ? (
                 <tr><td colSpan={8} className="py-12 text-center"><div className="w-6 h-6 border-2 border-blue-700 border-t-transparent rounded-full animate-spin mx-auto" /></td></tr>
-              ) : filtered.length === 0 ? (
-                <tr><td colSpan={8} className="py-10 text-center text-gray-400">
-                  <Upload size={32} className="mx-auto mb-2 opacity-30" />
-                  <p className="font-medium">No approved applications found</p>
-                  <p className="text-xs mt-1">Approve student applications first, then enter marks here</p>
-                </td></tr>
               ) : filtered.map(app => {
                 const result = app.results?.[0]
                 const edit = editRow[app.id] || {}

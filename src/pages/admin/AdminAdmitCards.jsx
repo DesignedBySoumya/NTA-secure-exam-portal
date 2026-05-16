@@ -40,20 +40,27 @@ export default function AdminAdmitCards() {
     setGenerating(app.id)
     try {
       const rollNumber = generateRollNumber(index)
-      const secretExamId = generateSecretId()
+      // Only include columns that exist in the admit_cards table
       const payload = {
         application_id: app.id,
         roll_number: rollNumber,
-        secret_exam_id: secretExamId,
-        exam_date: app.exam_date || '2026-08-15',
-        exam_time: '10:00 AM',
-        is_active: true,
+        exam_date: app.exam_date || '2026-08-15T10:00:00+05:30',
       }
+
+      let error
       if (app.admit_cards?.[0]) {
-        await supabase.from('admit_cards').update(payload).eq('id', app.admit_cards[0].id)
+        const { error: updateErr } = await supabase.from('admit_cards').update(payload).eq('id', app.admit_cards[0].id)
+        error = updateErr
       } else {
-        await supabase.from('admit_cards').insert(payload)
+        const { error: insertErr } = await supabase.from('admit_cards').insert(payload)
+        error = insertErr
       }
+
+      if (error) {
+        console.error('Admit card error:', error)
+        throw new Error(error.message)
+      }
+
       await logAudit('ADMIT_CARD_GENERATED', { application_id: app.id, roll_number: rollNumber })
       toast.success(`Admit card generated: Roll No. ${rollNumber}`)
       fetchApps()

@@ -102,7 +102,7 @@ export default function AdmitCard() {
                       { label: 'Application No.', value: `APP-${data.application.id?.slice(0, 8).toUpperCase()}` },
                       { label: 'Roll Number', value: data.admitCard?.roll_number || '—' },
                       { label: 'Exam Date', value: data.admitCard?.exam_date ? new Date(data.admitCard.exam_date).toLocaleDateString('en-IN') : '—' },
-                      { label: 'Exam Time', value: data.admitCard?.exam_time || '10:00 AM' },
+                      { label: 'Exam Time', value: '10:00 AM' },
                     ].map(({ label, value }) => (
                       <div key={label}>
                         <p className="text-xs text-gray-500 font-medium">{label}</p>
@@ -135,7 +135,6 @@ export default function AdmitCard() {
                     <QRCodeSVG
                       value={JSON.stringify({
                         roll: data.admitCard?.roll_number,
-                        exam_id: data.admitCard?.secret_exam_id,
                         app_id: data.application.id,
                       })}
                       size={80}

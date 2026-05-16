@@ -11,12 +11,11 @@ export default function MeritList() {
   useEffect(() => {
     async function load() {
       setLoading(true)
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('results')
         .select('*, applications(exam_post, students(full_name, email, category, dob))')
         .not('merit_rank', 'is', null)
         .order('merit_rank')
-      if (error) console.error('Merit list fetch error:', error)
       setResults(data || [])
       setLoading(false)
     }
