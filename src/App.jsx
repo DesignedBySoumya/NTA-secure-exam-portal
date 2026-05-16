@@ -85,7 +85,7 @@ export default function App() {
           <Route path="/admin/admit-cards" element={<AppLayout roles={ADMIN}><AdminAdmitCards /></AppLayout>} />
           <Route path="/admin/results" element={<AppLayout roles={ADMIN}><AdminResults /></AppLayout>} />
           <Route path="/admin/merit-list" element={<AppLayout roles={ADMIN}><MeritList /></AppLayout>} />
-          <Route path="/admin/papers" element={<AppLayout roles={['super_admin']}><Papers /></AppLayout>} />
+          <Route path="/admin/papers" element={<AppLayout roles={ADMIN}><Papers /></AppLayout>} />
           <Route path="/admin/exams" element={<AppLayout roles={ADMIN}><AdminExams /></AppLayout>} />
           <Route path="/admin/audit-logs" element={<AppLayout roles={ADMIN}><AuditLogs /></AppLayout>} />
 
