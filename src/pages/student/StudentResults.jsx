@@ -14,7 +14,7 @@ export default function StudentResults() {
       if (st) {
         const { data: app } = await supabase.from('applications').select('*').eq('student_id', st.id).single()
         if (app) {
-          const { data: result } = await supabase.from('results').select('*').eq('application_id', app.id).single()
+          const { data: result } = await supabase.from('results').select('*').eq('application_id', app.id).order('created_at', { ascending: false }).limit(1).maybeSingle()
           setData({ student: st, application: app, result })
         }
       }

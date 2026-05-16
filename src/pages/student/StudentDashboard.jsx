@@ -35,7 +35,7 @@ export default function StudentDashboard() {
           setPayment(completedPayment || latestPayment)
 
           // Fetch result
-          const { data: res } = await supabase.from('results').select('*').eq('application_id', app.id).maybeSingle()
+          const { data: res } = await supabase.from('results').select('*').eq('application_id', app.id).order('created_at', { ascending: false }).limit(1).maybeSingle()
           setResult(res)
         }
       }
