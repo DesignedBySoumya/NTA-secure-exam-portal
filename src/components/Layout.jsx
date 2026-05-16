@@ -5,7 +5,7 @@ import {
   LayoutDashboard, User, FileText, CreditCard, Download, BarChart3,
   Users, CheckSquare, MapPin, Award, Upload, ListOrdered,
   QrCode, UserCheck, Activity, Lock, BookOpen, ClipboardList,
-  LogOut, Menu, X, Shield, Bell, ChevronDown, Radio
+  LogOut, Menu, X, Shield, Bell, ChevronDown
 } from 'lucide-react'
 
 const roleMenus = {
@@ -20,7 +20,7 @@ const roleMenus = {
   admin: [
     { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
     { label: 'Applications', icon: FileText, to: '/admin/applications' },
-    { label: 'Live Monitoring', icon: Radio, to: '/admin/students' },
+    { label: 'Staff Operations', icon: Users, to: '/admin/students' },
     { label: 'Exam Centers', icon: MapPin, to: '/admin/centers' },
     { label: 'Admit Cards', icon: Award, to: '/admin/admit-cards' },
     { label: 'Results', icon: BarChart3, to: '/admin/results' },
@@ -32,7 +32,7 @@ const roleMenus = {
   super_admin: [
     { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
     { label: 'Applications', icon: FileText, to: '/admin/applications' },
-    { label: 'Live Monitoring', icon: Radio, to: '/admin/students' },
+    { label: 'Staff Operations', icon: Users, to: '/admin/students' },
     { label: 'Exam Centers', icon: MapPin, to: '/admin/centers' },
     { label: 'Admit Cards', icon: Award, to: '/admin/admit-cards' },
     { label: 'Results', icon: BarChart3, to: '/admin/results' },
