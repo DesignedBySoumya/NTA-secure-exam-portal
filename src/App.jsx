@@ -20,6 +20,7 @@ import StudentResults from './pages/student/StudentResults'
 // Admin
 import AdminDashboard from './pages/admin/AdminDashboard'
 import Applications from './pages/admin/Applications'
+import Students from './pages/admin/Students'
 import ExamCenters from './pages/admin/ExamCenters'
 import AdminAdmitCards from './pages/admin/AdminAdmitCards'
 import AdminResults from './pages/admin/AdminResults'
@@ -79,7 +80,7 @@ export default function App() {
           {/* Admin */}
           <Route path="/admin/dashboard" element={<AppLayout roles={ADMIN}><AdminDashboard /></AppLayout>} />
           <Route path="/admin/applications" element={<AppLayout roles={ADMIN}><Applications /></AppLayout>} />
-          <Route path="/admin/students" element={<AppLayout roles={ADMIN}><Applications /></AppLayout>} />
+          <Route path="/admin/students" element={<AppLayout roles={ADMIN}><Students /></AppLayout>} />
           <Route path="/admin/centers" element={<AppLayout roles={ADMIN}><ExamCenters /></AppLayout>} />
           <Route path="/admin/admit-cards" element={<AppLayout roles={ADMIN}><AdminAdmitCards /></AppLayout>} />
           <Route path="/admin/results" element={<AppLayout roles={ADMIN}><AdminResults /></AppLayout>} />

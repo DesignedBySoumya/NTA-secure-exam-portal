@@ -59,16 +59,21 @@ export default function StudentPayment() {
     await new Promise(r => setTimeout(r, 2000))
     try {
       const txnId = `TXN${Date.now()}`
-      await supabase.from('payments').update({
+      // Only updating 'status' because the other columns don't exist in the database yet
+      const { error } = await supabase.from('payments').update({
         status: 'completed',
-        transaction_id: txnId,
-        payment_date: new Date().toISOString(),
-        payment_method: 'Online',
       }).eq('id', payment.id)
+      
+      if (error) {
+        console.error('Supabase update error:', error)
+        throw new Error(error.message || 'Database update failed')
+      }
+
       setPayment({ ...payment, status: 'completed', transaction_id: txnId, payment_date: new Date().toISOString(), payment_method: 'Online' })
       toast.success('Payment successful!')
     } catch (err) {
-      toast.error('Payment failed. Try again.')
+      console.error(err)
+      toast.error(`Payment failed: ${err.message}. Please check if database columns exist.`)
     } finally {
       setPaying(false)
     }
@@ -128,7 +133,7 @@ export default function StudentPayment() {
                       </div>
                       <div className="flex justify-between border-b border-gray-100 pb-4">
                         <span className="text-gray-500 text-sm">Transaction ID</span>
-                        <span className="font-mono font-bold text-gray-900">{payment.transaction_id}</span>
+                        <span className="font-mono font-bold text-gray-900">{payment.transaction_id || `TXN${payment.id?.slice(0,8).toUpperCase()}`}</span>
                       </div>
                       <div className="flex justify-between border-b border-gray-100 pb-4">
                         <span className="text-gray-500 text-sm">Amount Paid</span>
@@ -136,7 +141,7 @@ export default function StudentPayment() {
                       </div>
                       <div className="flex justify-between border-b border-gray-100 pb-4">
                         <span className="text-gray-500 text-sm">Payment Date</span>
-                        <span className="font-medium text-gray-900">{payment.payment_date ? new Date(payment.payment_date).toLocaleString('en-IN') : 'N/A'}</span>
+                        <span className="font-medium text-gray-900">{payment.payment_date ? new Date(payment.payment_date).toLocaleString('en-IN') : new Date(payment.created_at || Date.now()).toLocaleString('en-IN')}</span>
                       </div>
                       <div className="flex justify-between border-b border-gray-100 pb-4">
                         <span className="text-gray-500 text-sm">Payment Mode</span>

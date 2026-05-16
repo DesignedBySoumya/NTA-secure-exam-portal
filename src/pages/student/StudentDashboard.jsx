@@ -110,7 +110,7 @@ export default function StudentDashboard() {
           <p className="text-2xl font-bold text-gray-900 mt-1">{payment?.status === 'completed' ? 'Paid' : 'Pending'}</p>
           {payment?.status === 'completed' ? (
             <div className="mt-4 pt-4 border-t border-gray-50">
-              <p className="text-xs text-green-600 font-medium">Transaction: {payment.transaction_id?.slice(0,10)}...</p>
+              <p className="text-xs text-green-600 font-medium">Transaction: {payment.transaction_id ? payment.transaction_id.slice(0,10) + '...' : `TXN${payment.id?.slice(0,8).toUpperCase()}`}</p>
             </div>
           ) : application && (
             <Link to="/student/payment" className="text-xs text-blue-600 font-bold mt-4 block hover:underline">Pay Now →</Link>

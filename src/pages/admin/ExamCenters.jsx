@@ -35,14 +35,36 @@ export default function ExamCenters() {
   const handleSave = async (e) => {
     e.preventDefault()
     setSaving(true)
+    
+    // Create a payload matching the updated database schema
+    const payload = {
+      name: form.name,
+      code: form.code,
+      city: form.city,
+      state: form.state,
+      address: form.address,
+      capacity: form.capacity ? parseInt(form.capacity) : 0,
+      incharge_name: form.incharge_name || null,
+      incharge_phone: form.incharge_phone || null
+    }
+
     try {
+      let error;
       if (editing) {
-        await supabase.from('exam_centers').update(form).eq('id', editing.id)
-        toast.success('Center updated!')
+        const { error: updateError } = await supabase.from('exam_centers').update(payload).eq('id', editing.id)
+        error = updateError;
+        if (!error) toast.success('Center updated!')
       } else {
-        await supabase.from('exam_centers').insert(form)
-        toast.success('Center added!')
+        const { error: insertError } = await supabase.from('exam_centers').insert(payload)
+        error = insertError;
+        if (!error) toast.success('Center added!')
       }
+      
+      if (error) {
+        console.error('Supabase error:', error)
+        throw new Error(error.message || 'Database operation failed')
+      }
+      
       setShowForm(false)
       fetchCenters()
     } catch (err) {
@@ -99,7 +121,7 @@ export default function ExamCenters() {
                   <p className="text-gray-400">Students Allotted</p>
                   <p className="font-bold text-green-700 flex items-center gap-1">
                     <Users size={12} />
-                    {center.applications?.length || 0}
+                    {center.applications?.[0]?.count || 0}
                   </p>
                 </div>
               </div>
