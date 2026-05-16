@@ -51,31 +51,20 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <div className="page-header relative overflow-hidden bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 p-8 rounded-3xl text-white shadow-2xl shadow-blue-900/20 mb-8 border border-slate-800">
-        <div className="relative z-10 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-black tracking-tight mb-2">Admin Dashboard</h1>
-            <p className="text-blue-200 text-sm font-medium">Command center for examination management and analytics</p>
-          </div>
-          <div className="hidden md:flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-            <span className="text-sm font-bold tracking-wider text-emerald-50">SYSTEM ONLINE</span>
-          </div>
-        </div>
-        <div className="absolute top-0 right-0 p-8 opacity-5">
-          <TrendingUp size={160} />
-        </div>
+      <div className="page-header">
+        <h1 className="page-title">Admin Dashboard</h1>
+        <p className="page-subtitle">Overview of all registrations, payments, and exam activities</p>
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
         {statCards.map(({ label, value, icon: Icon, bg, iconBg, text, link }) => (
-          <Link to={link} key={label} className={`card ${bg} border-0 hover:-translate-y-1 transition-all duration-300 shadow-lg hover:shadow-xl group`}>
-            <div className={`w-12 h-12 ${iconBg} rounded-2xl flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform`}>
-              <Icon size={22} className={text} />
+          <Link to={link} key={label} className={`stat-card ${bg} border-0 hover:scale-105 transition-transform`}>
+            <div className={`w-10 h-10 ${iconBg} rounded-xl flex items-center justify-center mb-3`}>
+              <Icon size={20} className={text} />
             </div>
-            <p className={`text-3xl font-black ${text} tracking-tight`}>{value ?? 0}</p>
-            <p className="text-xs font-bold text-slate-500 mt-1 uppercase tracking-wider">{label}</p>
+            <p className={`text-2xl font-bold ${text}`}>{value ?? 0}</p>
+            <p className="text-xs text-gray-600 mt-1 leading-tight">{label}</p>
           </Link>
         ))}
       </div>
