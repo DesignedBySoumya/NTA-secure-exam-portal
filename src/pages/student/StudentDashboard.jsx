@@ -9,6 +9,7 @@ export default function StudentDashboard() {
   const [student, setStudent] = useState(null)
   const [application, setApplication] = useState(null)
   const [payment, setPayment] = useState(null)
+  const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -32,6 +33,10 @@ export default function StudentDashboard() {
           const completedPayment = payments?.find(p => p.status === 'completed')
           const latestPayment = payments?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
           setPayment(completedPayment || latestPayment)
+
+          // Fetch result
+          const { data: res } = await supabase.from('results').select('*').eq('application_id', app.id).maybeSingle()
+          setResult(res)
         }
       }
       setLoading(false)
@@ -139,10 +144,23 @@ export default function StudentDashboard() {
             <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center">
               <BarChart3 size={24} className="text-orange-600" />
             </div>
+            {result && statusIcon(result.status === 'passed' ? 'approved' : 'rejected')}
           </div>
           <p className="text-sm font-medium text-gray-500">Results</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">N/A</p>
-          <p className="text-xs text-gray-400 mt-4">After Examination</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">
+            {result ? `${result.percentage}%` : 'N/A'}
+          </p>
+          {result ? (
+            <div className="mt-4 pt-4 border-t border-gray-50">
+              <p className={`text-xs font-bold ${result.status === 'passed' ? 'text-green-600' : 'text-red-600'}`}>
+                {result.status === 'passed' ? '✓ Qualified' : '✗ Not Qualified'}
+                {result.merit_rank ? ` • Rank #${result.merit_rank}` : ''}
+              </p>
+              <Link to="/student/results" className="text-xs text-blue-600 font-bold mt-2 block hover:underline">View Scorecard →</Link>
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400 mt-4">After Examination</p>
+          )}
         </div>
       </div>
 
@@ -229,6 +247,7 @@ export default function StudentDashboard() {
                 { label: 'Application Submitted', done: !!application, desc: application ? 'NEET form complete' : 'Waiting' },
                 { label: 'Payment Completed', done: payment?.status === 'completed', desc: payment?.status === 'completed' ? 'Fee received' : 'Pending' },
                 { label: 'Admit Card Issued', done: application?.status === 'approved' && payment?.status === 'completed', desc: 'Pending admin review' },
+                { label: 'Results Published', done: !!result, desc: result ? `${result.percentage}% — ${result.status}` : 'Awaiting exam' },
               ].map((step, i) => (
                 <div key={i} className="flex items-start gap-4 relative z-10">
                   <div className={`mt-1 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${step.done ? 'bg-green-500 shadow-sm shadow-green-200' : 'bg-white border-2 border-gray-200'}`}>
