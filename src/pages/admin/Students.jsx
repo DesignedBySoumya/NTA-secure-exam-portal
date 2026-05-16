@@ -240,7 +240,7 @@ export default function LiveMonitoring() {
                   </div>
                 </div>
               ))}
-              <div className="pt-2 text-[10px] text-blue-500/50 animate-pulse">>>> Awaiting next data packet...</div>
+              <div className="pt-2 text-[10px] text-blue-500/50 animate-pulse">&gt;&gt;&gt; Awaiting next data packet...</div>
             </div>
           </div>
 
