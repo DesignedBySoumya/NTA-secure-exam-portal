@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-heading: "Sora", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
 @layer base {
   :root {
     --gov-blue: #1e40af;

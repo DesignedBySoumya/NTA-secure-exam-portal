@@ -51,7 +51,7 @@ export default function LiveMonitoring() {
             <Radio className="text-[#3B82F6] relative z-10 animate-pulse" size={24} />
           </div>
           <div>
-            <h1 className="text-xl font-black tracking-tighter uppercase italic">📡 Live Center Monitoring</h1>
+            <h1 className="text-xl font-heading font-black tracking-tighter uppercase italic">📡 Live Center Monitoring</h1>
             <p className="text-[10px] text-[#94A3B8] font-mono uppercase tracking-widest">National Command Center // Active Session</p>
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function LiveMonitoring() {
                 <div className="w-48 h-48 rounded-full border border-[#3B82F6]/30 animate-ping"></div>
               </div>
               <div className="mt-8">
-                <h2 className="text-2xl font-black tracking-tighter uppercase italic text-white/90">India Live Operations Map</h2>
+                <h2 className="text-2xl font-heading font-black tracking-tighter uppercase italic text-white/90">India Live Operations Map</h2>
                 <p className="text-xs text-[#94A3B8] mt-2 font-mono">Interactive Geographic Intelligence • Real-time Pulse Tracking</p>
                 <div className="mt-6 flex justify-center gap-8">
                   <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#10B981]">
@@ -144,7 +144,7 @@ export default function LiveMonitoring() {
           {/* Section 4: Center Monitoring Grid */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-black uppercase tracking-widest text-white/70 flex items-center gap-2">
+              <h2 className="text-sm font-heading font-black uppercase tracking-widest text-white/70 flex items-center gap-2">
                 <Radio size={16} className="text-[#3B82F6]" />
                 Center Monitoring Grid
               </h2>
@@ -161,7 +161,7 @@ export default function LiveMonitoring() {
                     <div className="flex items-center gap-3">
                       <div className={`w-3 h-3 rounded-full ${i % 3 === 0 ? 'bg-[#EF4444] animate-pulse shadow-[0_0_8px_#EF4444]' : 'bg-[#10B981]'} `}></div>
                       <div>
-                        <h3 className="font-bold text-sm tracking-tight">{center.code} // {center.name}</h3>
+                        <h3 className="font-heading font-bold text-sm tracking-tight">{center.code} // {center.name}</h3>
                         <p className="text-[10px] text-[#94A3B8] font-mono uppercase">{center.city}, {center.state}</p>
                       </div>
                     </div>
@@ -218,7 +218,7 @@ export default function LiveMonitoring() {
           {/* Section 3: Live Alert Stream */}
           <div className="bg-[#121A2B] border border-[#1E293B] rounded-3xl overflow-hidden flex flex-col h-[350px]">
             <div className="p-5 border-b border-[#1E293B] flex items-center justify-between bg-[#1E293B]/30">
-              <h2 className="text-xs font-black uppercase tracking-widest flex items-center gap-2">
+              <h2 className="text-xs font-heading font-black uppercase tracking-widest flex items-center gap-2">
                 <Radio size={14} className="text-[#EF4444] animate-pulse" />
                 Live Incident Stream
               </h2>
@@ -249,7 +249,7 @@ export default function LiveMonitoring() {
             <div className="absolute top-0 right-0 p-4 opacity-10">
               <Cpu size={80} className="text-[#3B82F6]" />
             </div>
-            <h2 className="text-xs font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+            <h2 className="text-xs font-heading font-black uppercase tracking-widest mb-4 flex items-center gap-2">
               <Zap size={14} className="text-[#F59E0B]" />
               AI Fraud Intelligence
             </h2>
@@ -281,7 +281,7 @@ export default function LiveMonitoring() {
 
           {/* Section 6: Incident Response Panel */}
           <div className="bg-[#121A2B] border border-[#1E293B] rounded-3xl p-6">
-            <h2 className="text-xs font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+            <h2 className="text-xs font-heading font-black uppercase tracking-widest mb-4 flex items-center gap-2">
               <Radio size={14} className="text-white" />
               Incident Response Panel
             </h2>
