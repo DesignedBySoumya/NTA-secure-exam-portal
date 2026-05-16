@@ -19,8 +19,8 @@ const roleMenus = {
   ],
   admin: [
     { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
+    { label: 'Reports', icon: BarChart3, to: '/admin/reports' },
     { label: 'Applications', icon: FileText, to: '/admin/applications' },
-    { label: 'Students', icon: Users, to: '/admin/students' },
     { label: 'Exam Centers', icon: MapPin, to: '/admin/centers' },
     { label: 'Admit Cards', icon: Award, to: '/admin/admit-cards' },
     { label: 'Results', icon: BarChart3, to: '/admin/results' },
@@ -31,8 +31,8 @@ const roleMenus = {
   ],
   super_admin: [
     { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
+    { label: 'Reports', icon: BarChart3, to: '/admin/reports' },
     { label: 'Applications', icon: FileText, to: '/admin/applications' },
-    { label: 'Students', icon: Users, to: '/admin/students' },
     { label: 'Exam Centers', icon: MapPin, to: '/admin/centers' },
     { label: 'Admit Cards', icon: Award, to: '/admin/admit-cards' },
     { label: 'Results', icon: BarChart3, to: '/admin/results' },

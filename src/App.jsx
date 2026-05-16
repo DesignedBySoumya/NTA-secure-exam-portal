@@ -20,7 +20,6 @@ import StudentResults from './pages/student/StudentResults'
 // Admin
 import AdminDashboard from './pages/admin/AdminDashboard'
 import Applications from './pages/admin/Applications'
-import Students from './pages/admin/Students'
 import ExamCenters from './pages/admin/ExamCenters'
 import AdminAdmitCards from './pages/admin/AdminAdmitCards'
 import AdminResults from './pages/admin/AdminResults'
@@ -28,6 +27,7 @@ import MeritList from './pages/admin/MeritList'
 import Papers from './pages/admin/Papers'
 import AdminExams from './pages/admin/AdminExams'
 import AuditLogs from './pages/admin/AuditLogs'
+import Reports from './pages/admin/Reports'
 
 // Center
 import CenterDashboard from './pages/center/CenterDashboard'
@@ -80,7 +80,6 @@ export default function App() {
           {/* Admin */}
           <Route path="/admin/dashboard" element={<AppLayout roles={ADMIN}><AdminDashboard /></AppLayout>} />
           <Route path="/admin/applications" element={<AppLayout roles={ADMIN}><Applications /></AppLayout>} />
-          <Route path="/admin/students" element={<AppLayout roles={ADMIN}><Students /></AppLayout>} />
           <Route path="/admin/centers" element={<AppLayout roles={ADMIN}><ExamCenters /></AppLayout>} />
           <Route path="/admin/admit-cards" element={<AppLayout roles={ADMIN}><AdminAdmitCards /></AppLayout>} />
           <Route path="/admin/results" element={<AppLayout roles={ADMIN}><AdminResults /></AppLayout>} />
@@ -88,6 +87,7 @@ export default function App() {
           <Route path="/admin/papers" element={<AppLayout roles={ADMIN}><Papers /></AppLayout>} />
           <Route path="/admin/exams" element={<AppLayout roles={ADMIN}><AdminExams /></AppLayout>} />
           <Route path="/admin/audit-logs" element={<AppLayout roles={ADMIN}><AuditLogs /></AppLayout>} />
+          <Route path="/admin/reports" element={<AppLayout roles={ADMIN}><Reports /></AppLayout>} />
 
           {/* Center */}
           <Route path="/center/dashboard" element={<AppLayout roles={CENTER}><CenterDashboard /></AppLayout>} />
