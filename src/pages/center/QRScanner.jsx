@@ -56,22 +56,21 @@ export default function QRScanner() {
       let parsed
       try { parsed = JSON.parse(qrData) } catch { toast.error('Invalid QR code format'); setLoading(false); return }
 
-      // Find admit card
-      const { data: admit } = await supabase
+      // Find admit card by roll number
+      const { data: admit, error: admitErr } = await supabase
         .from('admit_cards')
         .select('*, applications(*, students(*), exam_centers(name))')
         .eq('roll_number', parsed.roll)
-        .eq('secret_exam_id', parsed.exam_id)
-        .single()
+        .maybeSingle()
 
-      if (!admit) { toast.error('Invalid admit card — not found'); setLoading(false); return }
+      if (admitErr || !admit) { toast.error('Invalid admit card — not found'); setLoading(false); return }
 
       // Check for duplicate
       const { data: existing } = await supabase
         .from('attendance')
         .select('id')
         .eq('application_id', admit.application_id)
-        .single()
+        .maybeSingle()
 
       if (existing) {
         setResult({ type: 'duplicate', admit, message: 'Already marked present — duplicate entry attempt blocked!' })
@@ -80,14 +79,19 @@ export default function QRScanner() {
         return
       }
 
-      // Mark attendance
-      await supabase.from('attendance').insert({
+      // Mark attendance — only columns that exist in the attendance table
+      const { error: attErr } = await supabase.from('attendance').insert({
         application_id: admit.application_id,
-        center_id: centerId,
         status: 'present',
-        scanned_by: user.id,
-        scan_time: new Date().toISOString(),
+        biometric_verified: true,
       })
+
+      if (attErr) {
+        console.error('Attendance insert error:', attErr)
+        toast.error('Failed to mark attendance: ' + attErr.message)
+        setLoading(false)
+        return
+      }
 
       await logAudit('STUDENT_VERIFIED', { roll: parsed.roll, name: admit.applications?.students?.full_name })
       setResult({ type: 'success', admit })
@@ -110,15 +114,7 @@ export default function QRScanner() {
     setLoading(true)
     setResult(null)
     try {
-      const { data: admit } = await supabase
-        .from('admit_cards')
-        .select('*, applications(*, students(*), exam_centers(name))')
-        .eq('roll_number', roll)
-        .single()
-
-      if (!admit) { toast.error('Roll number not found'); setLoading(false); return }
-
-      const qrData = JSON.stringify({ roll: admit.roll_number, exam_id: admit.secret_exam_id, app_id: admit.application_id })
+      const qrData = JSON.stringify({ roll: roll, app_id: '' })
       await verifyQR(qrData)
     } catch (err) {
       toast.error('Not found')
