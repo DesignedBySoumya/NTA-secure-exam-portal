@@ -19,7 +19,7 @@ export default function Attendance() {
 
       const { data } = await supabase
         .from('applications')
-        .select('*, students(full_name, email, photo_url, category), admit_cards(roll_number, exam_time), attendance(*)')
+        .select('*, students(full_name, email, photo_url, category), admit_cards(roll_number, exam_date), attendance(*)')
         .eq('center_id', role.center_id)
         .eq('status', 'approved')
         .order('created_at')
@@ -112,14 +112,14 @@ export default function Attendance() {
                     </td>
                     <td className="px-5 py-3 font-mono text-sm">{app.admit_cards?.[0]?.roll_number || '—'}</td>
                     <td className="px-5 py-3 text-sm text-gray-600">{app.students?.category}</td>
-                    <td className="px-5 py-3 text-sm">{app.admit_cards?.[0]?.exam_time || '10:00 AM'}</td>
+                    <td className="px-5 py-3 text-sm">{app.admit_cards?.[0]?.exam_date ? new Date(app.admit_cards[0].exam_date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '10:00 AM'}</td>
                     <td className="px-5 py-3">
                       {isPresent
                         ? <span className="badge-verified"><UserCheck size={12} />Present</span>
                         : <span className="badge-unpaid"><Clock size={12} />Absent</span>}
                     </td>
                     <td className="px-5 py-3 text-xs text-gray-500">
-                      {att?.scan_time ? new Date(att.scan_time).toLocaleTimeString('en-IN') : '—'}
+                      {att?.created_at ? new Date(att.created_at).toLocaleTimeString('en-IN') : '—'}
                     </td>
                   </tr>
                 )

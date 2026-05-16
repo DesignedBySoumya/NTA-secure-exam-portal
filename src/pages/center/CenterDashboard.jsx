@@ -14,22 +14,51 @@ export default function CenterDashboard() {
   useEffect(() => {
     async function load() {
       // Get staff's center
-      const { data: role } = await supabase.from('user_roles').select('center_id').eq('user_id', user.id).single()
-      if (role?.center_id) {
-        const { data: center } = await supabase.from('exam_centers').select('name').eq('id', role.center_id).single()
+      const { data: role } = await supabase
+        .from('user_roles').select('center_id').eq('user_id', user.id).maybeSingle()
+
+      const centerId = role?.center_id
+      if (centerId) {
+        const { data: center } = await supabase
+          .from('exam_centers').select('name').eq('id', centerId).single()
         setCenterName(center?.name || '')
 
-        const { count: total } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('center_id', role.center_id)
-        const { count: present } = await supabase.from('attendance').select('*', { count: 'exact', head: true }).eq('center_id', role.center_id).eq('status', 'present')
-        setStats({ total: total || 0, present: present || 0, absent: (total || 0) - (present || 0) })
+        // Total applications at this center
+        const { count: total } = await supabase
+          .from('applications')
+          .select('*', { count: 'exact', head: true })
+          .eq('center_id', centerId)
 
-        const { data: scans } = await supabase
-          .from('attendance')
-          .select('*, applications(students(full_name, photo_url), admit_cards(roll_number))')
-          .eq('center_id', role.center_id)
-          .order('created_at', { ascending: false })
-          .limit(5)
-        setRecentScans(scans || [])
+        // Attendance rows joined through applications for this center
+        // attendance has no center_id — filter by matching application_ids
+        const { data: appIds } = await supabase
+          .from('applications')
+          .select('id')
+          .eq('center_id', centerId)
+
+        const ids = (appIds || []).map(a => a.id)
+
+        let present = 0
+        let scans = []
+        if (ids.length > 0) {
+          const { count: presentCount } = await supabase
+            .from('attendance')
+            .select('*', { count: 'exact', head: true })
+            .in('application_id', ids)
+            .eq('status', 'present')
+          present = presentCount || 0
+
+          const { data: scanData } = await supabase
+            .from('attendance')
+            .select('*, applications(exam_post, students(full_name, photo_url), admit_cards(roll_number))')
+            .in('application_id', ids)
+            .order('created_at', { ascending: false })
+            .limit(5)
+          scans = scanData || []
+        }
+
+        setStats({ total: total || 0, present, absent: (total || 0) - present })
+        setRecentScans(scans)
       }
       setLoading(false)
     }

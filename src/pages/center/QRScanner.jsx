@@ -11,6 +11,8 @@ export default function QRScanner() {
   const [manualInput, setManualInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [centerId, setCenterId] = useState(null)
+  const [lastScanned, setLastScanned] = useState(null)
+  const [scannedHistory, setScannedHistory] = useState([])
   const videoRef = useRef()
   const streamRef = useRef()
   const intervalRef = useRef()
@@ -27,14 +29,29 @@ export default function QRScanner() {
       streamRef.current = stream
       if (videoRef.current) videoRef.current.srcObject = stream
       setScanning(true)
-      // Poll for QR frames
-      intervalRef.current = setInterval(() => processFrame(), 500)
+      // Start ZXing reader
+      const { BrowserMultiFormatReader } = await import('@zxing/library')
+      const codeReader = new BrowserMultiFormatReader()
+      // Decode continuously
+      codeReader.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
+        if (result) {
+          // Stop after first successful scan
+          stopCamera()
+          verifyQR(result.getText())
+        }
+        // ignore errors
+      })
+      // Store reader to stop later
+      videoRef.current._codeReader = codeReader
     } catch {
       toast.error('Camera access denied. Use manual entry below.')
     }
   }
 
   const stopCamera = () => {
+    if (videoRef.current && videoRef.current._codeReader) {
+      videoRef.current._codeReader.reset()
+    }
     if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop())
     if (intervalRef.current) clearInterval(intervalRef.current)
     setScanning(false)
@@ -49,53 +66,65 @@ export default function QRScanner() {
     // jsqr would go here in production, using manual verify for demo
   }, [])
 
+  // Helper: mark present directly by roll (used for manual entry)
+  const markPresentByRoll = async (roll) => {
+    // Find admit card
+    const { data: admit, error: admitErr } = await supabase
+      .from('admit_cards')
+      .select('*, applications(*, students(*), exam_centers(name))')
+      .eq('roll_number', roll)
+      .maybeSingle()
+
+    if (admitErr || !admit) { toast.error('Roll number not found'); return false }
+
+    // Duplicate check
+    const { data: existing } = await supabase
+      .from('attendance')
+      .select('id')
+      .eq('application_id', admit.application_id)
+      .maybeSingle()
+
+    if (existing) {
+      setResult({ type: 'duplicate', admit, message: 'Already marked present — duplicate entry blocked!' })
+      await logAudit('DUPLICATE_SCAN_BLOCKED', { roll, application_id: admit.application_id })
+      return false
+    }
+
+    // Insert attendance
+    const { error: attErr } = await supabase.from('attendance').insert({
+      application_id: admit.application_id,
+      status: 'present',
+      biometric_verified: true,
+    })
+    if (attErr) {
+      console.error('Attendance insert error:', attErr)
+      toast.error('Failed to mark attendance: ' + attErr.message)
+      return false
+    }
+
+    await logAudit('STUDENT_VERIFIED', { roll, name: admit.applications?.students?.full_name })
+    setResult({ type: 'success', admit })
+    toast.success('Student verified and marked present!')
+    setScannedHistory(prev => [...prev, roll])
+    return true
+  }
+
   const verifyQR = async (qrData) => {
     setLoading(true)
     setResult(null)
     try {
       let parsed
-      try { parsed = JSON.parse(qrData) } catch { toast.error('Invalid QR code format'); setLoading(false); return }
-
-      // Find admit card by roll number
-      const { data: admit, error: admitErr } = await supabase
-        .from('admit_cards')
-        .select('*, applications(*, students(*), exam_centers(name))')
-        .eq('roll_number', parsed.roll)
-        .maybeSingle()
-
-      if (admitErr || !admit) { toast.error('Invalid admit card — not found'); setLoading(false); return }
-
-      // Check for duplicate
-      const { data: existing } = await supabase
-        .from('attendance')
-        .select('id')
-        .eq('application_id', admit.application_id)
-        .maybeSingle()
-
-      if (existing) {
-        setResult({ type: 'duplicate', admit, message: 'Already marked present — duplicate entry attempt blocked!' })
-        await logAudit('DUPLICATE_SCAN_BLOCKED', { roll: parsed.roll, application_id: admit.application_id })
-        setLoading(false)
-        return
+      // Support raw roll string or JSON payload
+      try {
+        parsed = JSON.parse(qrData)
+      } catch {
+        // If not JSON, treat whole string as roll
+        parsed = { roll: qrData }
       }
 
-      // Mark attendance — only columns that exist in the attendance table
-      const { error: attErr } = await supabase.from('attendance').insert({
-        application_id: admit.application_id,
-        status: 'present',
-        biometric_verified: true,
-      })
-
-      if (attErr) {
-        console.error('Attendance insert error:', attErr)
-        toast.error('Failed to mark attendance: ' + attErr.message)
-        setLoading(false)
-        return
-      }
-
-      await logAudit('STUDENT_VERIFIED', { roll: parsed.roll, name: admit.applications?.students?.full_name })
-      setResult({ type: 'success', admit })
-      toast.success('Student verified and marked present!')
+      if (!parsed?.roll) { toast.error('Roll number missing'); setLoading(false); return }
+      const success = await markPresentByRoll(parsed.roll)
+      if (success) setLastScanned(parsed.roll)
     } catch (err) {
       toast.error(err.message || 'Verification failed')
     } finally {
@@ -114,10 +143,12 @@ export default function QRScanner() {
     setLoading(true)
     setResult(null)
     try {
-      const qrData = JSON.stringify({ roll: roll, app_id: '' })
-      await verifyQR(qrData)
+      // Directly mark present using the roll number
+      const success = await markPresentByRoll(roll)
+      if (success) setLastScanned(roll)
     } catch (err) {
       toast.error('Not found')
+    } finally {
       setLoading(false)
     }
   }

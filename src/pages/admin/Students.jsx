@@ -36,10 +36,36 @@ export default function StaffOperations() {
   useEffect(() => {
     async function load() {
       setLoading(true)
-      const { data, error } = await supabase.from('staff_attendance').select('*').order('created_at', { ascending: false })
-      const source = (!error && data?.length > 0) ? data : MOCK_STAFF
-      setStaff(source)
-      setFiltered(source)
+      const { data, error } = await supabase
+        .from('attendance')
+        .select('*, applications(exam_post, center_id, exam_centers(name, code, city, state), students(full_name, email, phone, category))')
+        .order('created_at', { ascending: false })
+
+      if (!error && data?.length > 0) {
+        // Map attendance rows into the shape the UI expects
+        const mapped = data.map((row, i) => ({
+          id: row.id,
+          staff_id: row.application_id?.slice(0, 10).toUpperCase() || `ATT-${i + 1}`,
+          full_name: row.applications?.students?.full_name || 'Unknown',
+          role: row.applications?.exam_post || '—',
+          center_code: row.applications?.exam_centers?.code || '—',
+          center_name: row.applications?.exam_centers?.name || '—',
+          state: row.applications?.exam_centers?.state || '—',
+          phone: row.applications?.students?.phone || '—',
+          category: row.applications?.students?.category || '—',
+          attendance_status: row.status === 'present' ? 'active' : 'absent',
+          biometric_verified: row.biometric_verified,
+          gps_verified: false,
+          face_verified: row.biometric_verified,
+          check_in_time: row.status === 'present' ? row.created_at : null,
+          risk_level: 'low',
+        }))
+        setStaff(mapped)
+        setFiltered(mapped)
+      } else {
+        setStaff(MOCK_STAFF)
+        setFiltered(MOCK_STAFF)
+      }
       setLoading(false)
     }
     load()
