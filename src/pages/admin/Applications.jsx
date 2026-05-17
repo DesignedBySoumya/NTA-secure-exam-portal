@@ -19,11 +19,24 @@ export default function Applications() {
 
   useEffect(() => {
     supabase.from('exam_centers').select('id, name, city').then(({ data }) => setCenters(data || []))
+    // Automatically trigger allocation for scale, then fetch apps
+    triggerAutoAllocation()
   }, [])
 
   useEffect(() => {
     fetchApps()
   }, [page, search, statusFilter])
+
+  const triggerAutoAllocation = async () => {
+    try {
+      await supabase.rpc('auto_allocate_exam_centers')
+      // Refresh apps after auto allocation
+      fetchApps()
+    } catch (err) {
+      console.error('Auto allocation failed (Ensure SQL migration is applied):', err.message)
+      fetchApps() // Fetch apps anyway
+    }
+  }
 
   const fetchApps = async () => {
     setLoading(true)
@@ -54,7 +67,12 @@ export default function Applications() {
       toast.success(`Application ${action} successfully`)
       setSelected(null)
       setRejectReason('')
-      fetchApps()
+      // After any manual approval, run auto allocation again to see if we can allocate them immediately
+      if (action === 'approved' && !centerId) {
+         triggerAutoAllocation()
+      } else {
+         fetchApps()
+      }
     } catch (err) {
       toast.error(err.message)
     } finally {

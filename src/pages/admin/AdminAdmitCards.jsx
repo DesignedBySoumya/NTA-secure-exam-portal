@@ -4,8 +4,8 @@ import { Award, RefreshCw, QrCode, Send, CheckCircle, Search } from 'lucide-reac
 import { QRCodeSVG } from 'qrcode.react'
 import toast from 'react-hot-toast'
 
-function generateRollNumber(index) {
-  return `NEB2026${String(index + 1001).padStart(5, '0')}`
+function generateRollNumber() {
+  return `NEB2026${Math.floor(10000 + Math.random() * 90000)}${Date.now().toString().slice(-4)}`
 }
 
 function generateSecretId() {
@@ -39,7 +39,7 @@ export default function AdminAdmitCards() {
     }
     setGenerating(app.id)
     try {
-      const rollNumber = generateRollNumber(index)
+      const rollNumber = generateRollNumber()
       // Only include columns that exist in the admit_cards table
       const payload = {
         application_id: app.id,

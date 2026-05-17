@@ -33,6 +33,7 @@ import AuditLogs from './pages/admin/AuditLogs'
 import CenterDashboard from './pages/center/CenterDashboard'
 import QRScanner from './pages/center/QRScanner'
 import Attendance from './pages/center/Attendance'
+import StaffAttendance from './pages/center/StaffAttendance'
 import CenterPapers from './pages/center/CenterPapers'
 
 const STUDENT = ['student']
@@ -92,7 +93,8 @@ export default function App() {
           {/* Center */}
           <Route path="/center/dashboard" element={<AppLayout roles={CENTER}><CenterDashboard /></AppLayout>} />
           <Route path="/center/scanner" element={<AppLayout roles={CENTER}><QRScanner /></AppLayout>} />
-          <Route path="/center/attendance" element={<AppLayout roles={CENTER}><Attendance /></AppLayout>} />
+          <Route path="/center/student-attendance" element={<AppLayout roles={CENTER}><Attendance /></AppLayout>} />
+          <Route path="/center/staff-attendance" element={<AppLayout roles={CENTER}><StaffAttendance /></AppLayout>} />
           <Route path="/center/papers" element={<AppLayout roles={CENTER}><CenterPapers /></AppLayout>} />
 
           <Route path="*" element={<Navigate to="/login" replace />} />

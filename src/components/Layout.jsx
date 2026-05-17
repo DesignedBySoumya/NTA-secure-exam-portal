@@ -20,7 +20,7 @@ const roleMenus = {
   admin: [
     { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
     { label: 'Applications', icon: FileText, to: '/admin/applications' },
-    { label: 'Staff Operations', icon: Users, to: '/admin/students' },
+    { label: 'Staff Attendance', icon: Users, to: '/admin/students' },
     { label: 'Exam Centers', icon: MapPin, to: '/admin/centers' },
     { label: 'Admit Cards', icon: Award, to: '/admin/admit-cards' },
     { label: 'Results', icon: BarChart3, to: '/admin/results' },
@@ -32,7 +32,7 @@ const roleMenus = {
   super_admin: [
     { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
     { label: 'Applications', icon: FileText, to: '/admin/applications' },
-    { label: 'Staff Operations', icon: Users, to: '/admin/students' },
+    { label: 'Staff Attendance', icon: Users, to: '/admin/students' },
     { label: 'Exam Centers', icon: MapPin, to: '/admin/centers' },
     { label: 'Admit Cards', icon: Award, to: '/admin/admit-cards' },
     { label: 'Results', icon: BarChart3, to: '/admin/results' },
@@ -45,7 +45,8 @@ const roleMenus = {
   center_staff: [
     { label: 'Dashboard', icon: LayoutDashboard, to: '/center/dashboard' },
     { label: 'QR Scanner', icon: QrCode, to: '/center/scanner' },
-    { label: 'Attendance', icon: UserCheck, to: '/center/attendance' },
+    { label: 'Student Attendance', icon: UserCheck, to: '/center/student-attendance' },
+    { label: 'Staff Attendance', icon: Users, to: '/center/staff-attendance' },
     { label: 'Papers', icon: BookOpen, to: '/center/papers' },
   ],
 }

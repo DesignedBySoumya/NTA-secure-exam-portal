@@ -37,29 +37,31 @@ export default function StaffOperations() {
     async function load() {
       setLoading(true)
       const { data, error } = await supabase
-        .from('attendance')
-        .select('*, applications(exam_post, center_id, exam_centers(name, code, city, state), students(full_name, email, phone, category))')
+        .from('user_roles')
+        .select('*, exam_centers(name, code, city, state), staff_attendance(*)')
+        .in('role', ['center_staff'])
         .order('created_at', { ascending: false })
 
       if (!error && data?.length > 0) {
         // Map attendance rows into the shape the UI expects
-        const mapped = data.map((row, i) => ({
-          id: row.id,
-          staff_id: row.application_id?.slice(0, 10).toUpperCase() || `ATT-${i + 1}`,
-          full_name: row.applications?.students?.full_name || 'Unknown',
-          role: row.applications?.exam_post || '—',
-          center_code: row.applications?.exam_centers?.code || '—',
-          center_name: row.applications?.exam_centers?.name || '—',
-          state: row.applications?.exam_centers?.state || '—',
-          phone: row.applications?.students?.phone || '—',
-          category: row.applications?.students?.category || '—',
-          attendance_status: row.status === 'present' ? 'active' : 'absent',
-          biometric_verified: row.biometric_verified,
-          gps_verified: false,
-          face_verified: row.biometric_verified,
-          check_in_time: row.status === 'present' ? row.created_at : null,
-          risk_level: 'low',
-        }))
+        const mapped = data.map((row, i) => {
+          const isPresent = row.staff_attendance && row.staff_attendance.length > 0;
+          return {
+            id: row.id,
+            staff_id: row.user_id?.split('@')[0].toUpperCase() || `STAFF-${i + 1}`,
+            full_name: row.user_id, // using email as full name for now
+            role: row.role.replace('_', ' '),
+            center_code: row.exam_centers?.code || '—',
+            center_name: row.exam_centers?.name || '—',
+            state: row.exam_centers?.state || '—',
+            phone: '—',
+            attendance_status: isPresent ? 'active' : 'absent',
+            gps_verified: true,
+            face_verified: false,
+            check_in_time: isPresent ? row.staff_attendance[0].created_at : null,
+            risk_level: 'low',
+          }
+        })
         setStaff(mapped)
         setFiltered(mapped)
       } else {
@@ -106,7 +108,7 @@ export default function StaffOperations() {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div className="page-header mb-0">
-          <h1 className="page-title">Staff Operations</h1>
+          <h1 className="page-title">Staff Attendance</h1>
           <p className="page-subtitle">Examination workforce attendance monitoring and management</p>
         </div>
         <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-xs font-bold px-3 py-2 rounded-xl">
